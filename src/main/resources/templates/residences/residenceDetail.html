@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <title>Residence Detail</title>
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content">
+    <!--/*@thymesVar id="residName" type=""*/-->
+    <h1 class="my-4" th:text="${residence.residName}"></h1>
+    <div class="row">
+        <div class="col-md-6">
+            <img th:src="@{${residence.photo}}" alt="Photo" class="img-fluid"/>
+        </div>
+        <div class="col-md-6">
+            <table class="table">
+                <tr>
+                    <th>주소</th>
+                    <td th:text="${residence.residAddress}">Address</td>
+                </tr>
+                <tr>
+                    <th>유형</th>
+                    <td th:text="${residence.residType}">Type</td>
+                </tr>
+                <tr>
+                    <th>체크인 날짜</th>
+                    <td th:text="${residence.checkinDate}">체크인 날짜</td>
+                </tr>
+                <tr>
+                    <th>체크아웃 날짜</th>
+                    <td th:text="${residence.checkoutDate}">체크아웃 날짜</td>
+                </tr>
+                <tr>
+                    <th>가격</th>
+                    <td th:text="${residence.totalPrice} + '원'">Total Price</td>
+                </tr>
+                <tr>
+                    <th>할인 율</th>
+                    <td th:text="${residence.discountRate} + '%'">Discount Rate</td>
+                </tr>
+                <tr>
+                    <th>결제 가격</th>
+                    <td th:text="${residence.discountedPrice} + '원'">Discounted Price</td>
+                </tr>
+                <tr>
+                    <th>평점</th>
+                    <td th:text="${residence.rating} + '점'">Rating</td>
+                </tr>
+                <tr>
+                    <th>작성일</th>
+                    <td th:text="${residence.residDate}">Date</td>
+                </tr>
+                <tr>
+                    <th>소개 내용</th>
+                    <td th:text="${residence.residDescription}">Description</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <a href="/residenceList" class="btn btn-primary">Back to List</a>
+</div>
+</body>
+</html>
