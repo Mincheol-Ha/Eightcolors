@@ -1,41 +1,50 @@
 package com.springbootfinal.app.controller;
 
 import com.springbootfinal.app.domain.ResidenceDto;
-import com.springbootfinal.app.domain.ResidenceType;
 import com.springbootfinal.app.service.ResidenceService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Controller
+@Slf4j
 public class ResidenceController {
+    @Autowired
+    private ResidenceService residenceService;
 
-    private final ResidenceService residenceService;
-
-    public ResidenceController(ResidenceService residenceService) {
-        this.residenceService = residenceService;
+    // 게시글 리스트를 요청하는 메서드
+    @GetMapping("/residenceList")
+    public String getResidenceList(Model model) {
+        model.addAttribute("resList", residenceService.getResidenceList());
+        return "/residences/residenceList";
     }
 
-    @GetMapping("/residences")
-    public String listResidences(Model model) {
-        List<ResidenceDto> residences = residenceService.getAllResidences();
-        model.addAttribute("residences", residences);
-        return "residences";
+    // no에 해당하는 게시글 상세보기 요청을 처리하는 메서드
+    @GetMapping("/residenceDetail")
+    public String getResidenceDetail(@RequestParam("residNo") int residNo, Model model) {
+        model.addAttribute("residence", residenceService.getResidenceByNo(residNo));
+        return "/residences/residenceDetail";
     }
 
-    @GetMapping("/residences/new")
-    public String showAddResidenceForm(Model model) {
-        model.addAttribute("residence", new ResidenceDto());
-        model.addAttribute("residenceTypes", ResidenceType.values());
-        return "addresidences";
+    // 게시글 쓰기 폼 요청 처리 메서드
+    @GetMapping("/residenceAdd")
+    public String addResidenceDto() {
+        return "/residences/residenceAdd";
     }
 
-    @PostMapping("/residences")
-    public String addResidence(@ModelAttribute ResidenceDto residence, @RequestParam("photo") MultipartFile photo) {
-        residenceService.addResidenceWithPhoto(residence, photo);
-        return "redirect:/residences";
+    // 게시글을 DB 테이블에 추가하는 메서드
+    @PostMapping("/residenceAdd")
+    public String addResidence(@ModelAttribute ResidenceDto residenceDto) {
+        residenceService.addResidence(residenceDto);
+        return "redirect:/residenceList";
     }
+
+
+
+
+
+
+
 }

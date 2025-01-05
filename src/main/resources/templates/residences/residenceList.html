@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <title>Residence List</title>
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="my-4">Residence List</h1>
+    <table class="table table-striped">
+        <thead>
+        <a href="/residenceAdd" class="btn btn-success">숙소 추가</a>
+       <!-- <tr>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Address</th>
+            <th>Type</th>
+            <th>Check-in Date</th>
+            <th>Check-out Date</th>
+            <th>Total Price</th>
+            <th>Discount Rate</th>
+            <th>Discounted Price</th>
+            <th>Rating</th>
+            <th>Date</th>
+        </tr>-->
+        </thead>
+        <tbody>
+        <tr th:each="residence : ${resList}">
+            <td><img th:src="@{${residence.photo}}" alt="Photo" /></td>
+            <td><a th:href="@{/residenceDetail(residNo=${residence.residNo})}"
+                   th:text="${residence.residName}"
+                   th:src="${residence.photo}"></a></td>
+            <td th:text="${residence.residName}"></td>
+            <td th:text="${residence.residDescription}"></td>
+            <td th:text="${residence.residAddress}"></td>
+            <td th:text="${residence.residType}"></td>
+            <td th:text="${residence.checkinDate}"></td>
+            <td th:text="${residence.checkoutDate}"></td>
+            <td th:text="${residence.totalPrice}"></td>
+            <td th:text="${residence.discountRate}"></td>
+            <td th:text="${residence.discountedPrice}"></td>
+            <td th:text="${residence.rating}"></td>
+            <td th:text="${residence.residDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

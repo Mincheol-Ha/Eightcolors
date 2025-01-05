@@ -1,43 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.springbootfinal.app.mapper.ResidenceMapper">
 
-    <resultMap id="ResidenceResultMap" type="com.springbootfinal.app.domain.ResidenceDto">
-        <id property="residNo" column="resid_no"/>
-        <result property="residName" column="resid_name"/>
-        <result property="residDescription" column="resid_description"/>
-        <result property="residAddress" column="resid_address"/>
-        <result property="residType" column="resid_type" javaType="com.springbootfinal.app.domain.ResidenceType" jdbcType="VARCHAR"/>
-        <result property="checkinDate" column="checkin_date"/>
-        <result property="checkoutDate" column="checkout_date"/>
-        <result property="totalPrice" column="total_price"/>
-        <result property="discountRate" column="discount_rate"/>
-        <result property="discountedPrice" column="discounted_price"/>
-        <result property="rating" column="rating"/>
-        <result property="residDate" column="resid_date"/>
-    </resultMap>
-
-    <select id="getAllResidences" resultMap="ResidenceResultMap">
-        SELECT * FROM residence
+ <!--  게시글 리스트를 DB에서 가져오는 쿼리문-->
+    <select id="selectResidenceList" resultType="ResidenceDto">
+        SELECT * FROM residence ORDER BY resid_no DESC
     </select>
 
-    <insert id="insertResidence" parameterType="com.springbootfinal.app.domain.ResidenceDto">
-        INSERT INTO residence (
-            resid_name, resid_description, resid_address, resid_type,
-            checkin_date, checkout_date, total_price, discount_rate, rating
-        ) VALUES (
-                     #{residName}, #{residDescription}, #{residAddress}, #{residType.type},
-                     #{checkinDate}, #{checkoutDate}, #{totalPrice}, #{discountRate}, #{rating}
-                 )
+<!-- no에 해당하는 게시글 하나를 가져오는 맵핑 구문-->
+    <select id="selectResidenceByNo" resultType="ResidenceDto">
+        SELECT * FROM residence WHERE resid_no = #{resid_no}
+    </select>
+
+<!--게시글을 테이블에 추가하는 맵핑 구문-->
+    <insert id="insertResidence" parameterType="ResidenceDto">
+        INSERT INTO residence (resid_name, resid_description, resid_address, resid_type, checkin_date, checkout_date, total_price, discount_rate, rating, resid_date)
+        VALUES (#{residName}, #{residDescription}, #{residAddress}, #{residType}, #{checkinDate}, #{checkoutDate}, #{totalPrice}, #{discountRate}, #{rating}, #{residDate})
     </insert>
 
-    <insert id="insertPhoto">
-        INSERT INTO property_photos (resid_no, photo_path)
-        VALUES (#{residNo}, #{photoPath})
-    </insert>
 
 
 

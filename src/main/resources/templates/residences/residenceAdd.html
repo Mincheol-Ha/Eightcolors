@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <title>Residence Add</title>
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/Discount.js"></script>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <h1 class="my-4">Add New Residence</h1>
+        <form th:action="@{/residenceAdd}" method="post">
+            <div class="mb-3">
+                <label for="residName" class="form-label">Residence Name</label>
+                <input type="text" class="form-control" id="residName" name="residName" required>
+            </div>
+            <div class="mb-3">
+                <label for="residDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="residDescription" name="residDescription" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="residAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="residAddress" name="residAddress" required>
+            </div>
+            <div class="mb-3">
+                <label for="residType" class="form-label">Type</label>
+                <select class="form-control" id="residType" name="residType" required>
+                    <option value="hotel" th:text="#{hotel}" selected>호텔</option>
+                    <option value="pension" th:text="#{pension}">펜션</option>
+                    <option value="resort" th:text="#{resort}">리조트</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="checkinDate" class="form-label">Check-in Date</label>
+                <input type="date" class="form-control" id="checkinDate" name="checkinDate" required>
+            </div>
+            <div class="mb-3">
+                <label for="checkoutDate" class="form-label">Check-out Date</label>
+                <input type="date" class="form-control" id="checkoutDate" name="checkoutDate" required>
+            </div>
+            <div class="mb-3">
+                <label for="totalPrice" class="form-label">Total Price</label>
+                <input type="number" class="form-control" id="totalPrice" name="totalPrice" required oninput="calculateDiscountedPrice()">
+            </div>
+            <div class="mb-3">
+                <label for="discountRate" class="form-label">Discount Rate</label>
+                <input type="number" class="form-control" id="discountRate" name="discountRate" required oninput="calculateDiscountedPrice()">
+            </div>
+            <div class="mb-3">
+                <label for="discountedPrice" class="form-label">Discounted Price</label>
+                <input type="number" class="form-control" id="discountedPrice" name="discountedPrice" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="rating" class="form-label">Rating</label>
+                <input type="number" class="form-control" id="rating" name="rating" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
