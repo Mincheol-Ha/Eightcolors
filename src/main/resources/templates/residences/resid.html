@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <!-- Other head elements -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .card-img-left {
+            width: 100%;
+            height: 100%; /* Adjust the height to match the text container */
+            object-fit: cover;
+            border: 1px solid #000; /* Add border to the image */
+        }
+        .card, .card-body, .card-footer {
+            border: none; /* Remove border */
+        }
+        .stars {
+            color: gold;
+        }
+        .card-container {
+            max-width: 700px; /* Adjust the max-width as needed */
+            margin: auto; /* Center the card */
+        }
+        .table-container {
+            display: table;
+            width: 100%;
+        }
+        .table-cell {
+            display: table-cell;
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Navigation-->
+    <!-- Section-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-12 mb-5 card-container" th:each="residence : ${resList}">
+                    <div class="card h-100 text-center"> <!-- Center the text -->
+                        <div class="row g-0 justify-content-center"> <!-- Center the content -->
+                            <form>
+                                <div class="table-container">
+                                    <!-- Product image -->
+                                    <div class="table-cell col-md-4">
+                                        <img class="card-img-left" th:src="${residence.photo}" alt="Photo" />
+                                    </div>
+                                    <!-- Product details -->
+                                    <div class="table-cell col-md-8">
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <!-- Residence name -->
+                                                <h5 class="fw-bolder" th:text="${residence.residName}" style="border-bottom: 1px solid;"></h5>
+                                                <!-- Residence details -->
+                                                <p>체크인 날짜: <span th:text="${residence.checkinDate}"></span></p>
+                                                <p>체크아웃 날짜: <span th:text="${residence.checkoutDate}"></span></p>
+                                                <p>할인전 가격: <span th:text="${residence.totalPrice} + ' 원'"></span></p>
+                                                <p>할인 율: <span th:text="${residence.discountRate} + ' %'"></span></p>
+                                                <p>할인후 가격: <span th:text="${residence.discountedPrice} + ' 원'"></span></p>
+                                                <p>별점:
+                                                    <span th:each="i : ${#numbers.sequence(1, residence.rating)}">
+                                                        <i class="fas fa-star stars"></i>
+                                                    </span>
+                                                    <span th:each="i : ${#numbers.sequence(residence.rating, 1, 5)}">
+                                                        <i class="far fa-star stars"></i>
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <!-- Product actions -->
+                                        <div class="card-footer p-4 pt-0 bg-transparent">
+                                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" th:href="@{/residenceDetail(residNo=${residence.residNo})}"
+                                                                        th:text="상세보기"
+                                                                        th:src="${residence.photo}">View options</a>
+                                           </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Repeat similar blocks for other products -->
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

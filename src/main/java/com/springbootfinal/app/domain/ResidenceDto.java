@@ -21,6 +21,7 @@ public class ResidenceDto {
     private BigDecimal discountedPrice;
     private BigDecimal rating;
     private Timestamp residDate;
+    private String photoUrl;
 
     @ToString.Exclude // 사진 데이터도 toString()에서 제외
     private MultipartFile photo;

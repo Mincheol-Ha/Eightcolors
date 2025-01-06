@@ -11,7 +11,7 @@
 <div layout:fragment="content">
     <div class="container">
         <h1 class="my-4">Add New Residence</h1>
-        <form th:action="@{/residenceAdd}" method="post">
+        <form th:action="@{/residenceAdd}" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="residName" class="form-label">Residence Name</label>
                 <input type="text" class="form-control" id="residName" name="residName" required>
@@ -55,6 +55,11 @@
             <div class="mb-3">
                 <label for="rating" class="form-label">Rating</label>
                 <input type="number" class="form-control" id="rating" name="rating" required>
+            </div>
+            <!-- Other form fields -->
+            <div class="mb-3">
+                <label for="photo" class="form-label">Photo</label>
+                <input type="file" class="form-control" id="photo" name="photo" required>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>

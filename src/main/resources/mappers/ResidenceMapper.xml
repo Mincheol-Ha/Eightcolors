@@ -4,23 +4,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.springbootfinal.app.mapper.ResidenceMapper">
 
- <!--  게시글 리스트를 DB에서 가져오는 쿼리문-->
+    <!-- 게시글 리스트를 DB에서 가져오는 쿼리문 -->
     <select id="selectResidenceList" resultType="ResidenceDto">
         SELECT * FROM residence ORDER BY resid_no DESC
     </select>
 
-<!-- no에 해당하는 게시글 하나를 가져오는 맵핑 구문-->
+    <!-- no에 해당하는 게시글 하나를 가져오는 맵핑 구문 -->
     <select id="selectResidenceByNo" resultType="ResidenceDto">
         SELECT * FROM residence WHERE resid_no = #{resid_no}
     </select>
 
-<!--게시글을 테이블에 추가하는 맵핑 구문-->
+    <!-- 게시글을 테이블에 추가하는 맵핑 구문 -->
     <insert id="insertResidence" parameterType="ResidenceDto">
-        INSERT INTO residence (resid_name, resid_description, resid_address, resid_type, checkin_date, checkout_date, total_price, discount_rate, rating, resid_date)
-        VALUES (#{residName}, #{residDescription}, #{residAddress}, #{residType}, #{checkinDate}, #{checkoutDate}, #{totalPrice}, #{discountRate}, #{rating}, #{residDate})
+        INSERT INTO residence (resid_name, resid_description, resid_address, resid_type, checkin_date, checkout_date, total_price, discount_rate, rating, photo_url, resid_date)
+        VALUES (#{residName}, #{residDescription}, #{residAddress}, #{residType}, #{checkinDate}, #{checkoutDate}, #{totalPrice}, #{discountRate}, #{rating}, #{photoUrl}, #{residDate})
     </insert>
-
-
-
 
 </mapper>
