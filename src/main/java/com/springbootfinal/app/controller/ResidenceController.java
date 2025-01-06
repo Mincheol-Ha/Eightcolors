@@ -24,6 +24,9 @@ import java.util.UUID;
 public class ResidenceController {
     @Autowired
     private ResidenceService residenceService;
+    // 업로드한 사진을 저장할 폴더 위치를 상수로 선언
+    private static final String UPLOAD_DIR = "uploads/";
+
 
     @GetMapping("/resid")
     public String getResidence(Model model) {
@@ -51,29 +54,83 @@ public class ResidenceController {
         return "/residences/residenceAdd";
     }
 
+
+    /*@PostMapping("/residenceAdd")
+    // 여러개의 사진 파일을 업로드할 수 있도록 MultipartFile[]로 수정
+    public String addResidence(@ModelAttribute ResidenceDto residenceDto, @RequestParam("photo") MultipartFile[] photos) {
+        // 업로드한 사진 파일을 저장할 폴더가 없으면 생성
+        File dir = new File(UPLOAD_DIR);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        // 업로드한 사진 파일을 하나씩 처리
+        for (MultipartFile photo : photos) {
+            // 업로드한 사진 파일이 없으면 다음 사진 파일로 넘어감
+            if (photo.isEmpty()) {
+                continue;
+            }
+
+            // 업로드한 사진 파일의 이름을 UUID로 변경
+            String uuid = UUID.randomUUID().toString();
+            String originalFileName = photo.getOriginalFilename();
+            String saveFileName = uuid + "_" + originalFileName;
+
+            // 업로드한 사진 파일을 저장할 경로를 생성
+            Path savePath = Paths.get(UPLOAD_DIR + saveFileName);
+
+            // 업로드한 사진 파일을 저장
+            try {
+                Files.copy(photo.getInputStream(), savePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // 업로드한 사진 파일의 이름을 DTO에 저장
+            residenceDto.setPhotoUrl(saveFileName);
+        }
+
+        // 게시글을 추가
+        residenceService.addResidence(residenceDto);
+        return "redirect:/residenceList";
+    }*/
+
+    //업로드한 사진이 데이터베이스 property_photos에 저장
     @PostMapping("/residenceAdd")
-    public String addResidence(ResidenceDto residenceDto, MultipartFile photo) throws IOException {
-        // 업로드 디렉토리 경로 설정
-        String uploadDir = "uploads/";
-        File uploadDirectory = new File(uploadDir);
-
-        // 디렉토리가 없으면 생성
-        if (!uploadDirectory.exists()) {
-            uploadDirectory.mkdirs();  // 디렉토리 생성
+    public String addResidence(@ModelAttribute ResidenceDto residenceDto, @RequestParam("photo") MultipartFile photo) {
+        // 업로드한 사진 파일을 저장할 폴더가 없으면 생성
+        File dir = new File(UPLOAD_DIR);
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
 
-        // 사진 파일 처리
-        if (photo != null && !photo.isEmpty()) {
-            String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
-            File saveFile = new File(uploadDir, fileName);
-            photo.transferTo(saveFile); // 파일 저장
-            residenceDto.setPhotoUrl("/" + uploadDir + fileName);
+        // 업로드한 사진 파일이 없으면 다음 사진 파일로 넘어감
+        if (!photo.isEmpty()) {
+            // 업로드한 사진 파일의 이름을 UUID로 변경
+            String uuid = UUID.randomUUID().toString();
+            String originalFileName = photo.getOriginalFilename();
+            String saveFileName = uuid + "_" + originalFileName;
+
+            // 업로드한 사진 파일을 저장할 경로를 생성
+            Path savePath = Paths.get(UPLOAD_DIR + saveFileName);
+
+            // 업로드한 사진 파일을 저장
+            try {
+                Files.copy(photo.getInputStream(), savePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // 업로드한 사진 파일의 이름을 DTO에 저장
+            residenceDto.setPhotoUrl(saveFileName);
         }
 
-        // 데이터 저장
+        // 게시글을 추가
         residenceService.addResidence(residenceDto);
         return "redirect:/residenceList";
     }
+
+
 
 
 

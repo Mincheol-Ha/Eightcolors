@@ -45,9 +45,11 @@
                             <form>
                                 <div class="table-container">
                                     <!-- Product image -->
-                                    <div class="table-cell col-md-4">
-                                        <img class="card-img-left" th:src="${residence.photo}" alt="Photo" />
+                                    <!--업로드된 사진을 보여주는 뷰-->
+                                    <div class="table-cell  col-md-4">
+                                        <img class="card-img-left" th:src="@{residence.photo}" alt="Residence photo">
                                     </div>
+
                                     <!-- Product details -->
                                     <div class="table-cell col-md-8">
                                         <div class="card-body p-4">

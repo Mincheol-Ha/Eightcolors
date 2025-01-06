@@ -16,8 +16,8 @@
 
     <!-- 게시글을 테이블에 추가하는 맵핑 구문 -->
     <insert id="insertResidence" parameterType="ResidenceDto">
-        INSERT INTO residence (resid_name, resid_description, resid_address, resid_type, checkin_date, checkout_date, total_price, discount_rate, rating, photo_url, resid_date)
-        VALUES (#{residName}, #{residDescription}, #{residAddress}, #{residType}, #{checkinDate}, #{checkoutDate}, #{totalPrice}, #{discountRate}, #{rating}, #{photoUrl}, #{residDate})
+        INSERT INTO residence (resid_name, resid_description, resid_address, resid_type, checkin_date, checkout_date, total_price, discount_rate, rating, resid_date)
+        VALUES (#{residName}, #{residDescription}, #{residAddress}, #{residType}, #{checkinDate}, #{checkoutDate}, #{totalPrice}, #{discountRate}, #{rating}, #{residDate})
     </insert>
 
 </mapper>
