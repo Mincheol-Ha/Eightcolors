@@ -57,11 +57,10 @@
                 <input type="number" class="form-control" id="rating" name="rating" required>
             </div>
             <!-- Other form fields -->
-            <div class="mb-3">
-                <label for="photo" class="form-label">Photo</label>
-                <input type="file" class="form-control" id="photo" name="photo" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <form action="/residenceAdd" method="post" enctype="multipart/form-data">
+                <input type="file" name="photos" multiple>
+                <button type="submit">Upload</button>
+            </form>
         </form>
     </div>
 </div>

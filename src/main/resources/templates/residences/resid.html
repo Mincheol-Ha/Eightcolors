@@ -47,7 +47,7 @@
                                     <!-- Product image -->
                                     <!--업로드된 사진을 보여주는 뷰-->
                                     <div class="table-cell  col-md-4">
-                                        <img class="card-img-left" th:src="@{residence.photo}" alt="Residence photo">
+                                        <img class="card-img-left" th:src="@{residence.thumbnailUrl}" alt="Residence thumbnail">
                                     </div>
 
                                     <!-- Product details -->
@@ -59,9 +59,9 @@
                                                 <!-- Residence details -->
                                                 <p>체크인 날짜: <span th:text="${residence.checkinDate}"></span></p>
                                                 <p>체크아웃 날짜: <span th:text="${residence.checkoutDate}"></span></p>
-                                                <p>할인전 가격: <span th:text="${residence.totalPrice} + ' 원'"></span></p>
+                                                <p>할인전 가격: <span th:text="${#numbers.formatDecimal(residence.totalPrice, 0, 0)} + ' 원'"></span></p>
                                                 <p>할인 율: <span th:text="${residence.discountRate} + ' %'"></span></p>
-                                                <p>할인후 가격: <span th:text="${residence.discountedPrice} + ' 원'"></span></p>
+                                                <p>할인후 가격: <span th:text="${#numbers.formatDecimal(residence.discountedPrice, 0, 0)} + ' 원'"></span></p>
                                                 <p>별점:
                                                     <span th:each="i : ${#numbers.sequence(1, residence.rating)}">
                                                         <i class="fas fa-star stars"></i>
