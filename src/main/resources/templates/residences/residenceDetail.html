@@ -3,63 +3,42 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
 <head>
+    <meta charset="UTF-8">
     <title>Residence Detail</title>
-    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 <div layout:fragment="content">
-    <!--/*@thymesVar id="residName" type=""*/-->
-    <h1 class="my-4" th:text="${residence.residName}"></h1>
-    <div class="row">
-        <div class="col-md-6">
-            <img class="card-img-left" th:src="@{residence.thumbnailUrl}" alt="Residence thumbnail">
-        </div>
-        <div class="col-md-6">
-            <table class="table">
-                <tr>
-                    <th>주소</th>
-                    <td th:text="${residence.residAddress}">Address</td>
-                </tr>
-                <tr>
-                    <th>유형</th>
-                    <td th:text="${residence.residType}">Type</td>
-                </tr>
-                <tr>
-                    <th>체크인 날짜</th>
-                    <td th:text="${residence.checkinDate}">체크인 날짜</td>
-                </tr>
-                <tr>
-                    <th>체크아웃 날짜</th>
-                    <td th:text="${residence.checkoutDate}">체크아웃 날짜</td>
-                </tr>
-                <tr>
-                    <th>가격</th>
-                    <td th:text="${residence.totalPrice} + '원'">Total Price</td>
-                </tr>
-                <tr>
-                    <th>할인 율</th>
-                    <td th:text="${residence.discountRate} + '%'">Discount Rate</td>
-                </tr>
-                <tr>
-                    <th>결제 가격</th>
-                    <td th:text="${residence.discountedPrice} + '원'">Discounted Price</td>
-                </tr>
-                <tr>
-                    <th>평점</th>
-                    <td th:text="${residence.rating} + '점'">Rating</td>
-                </tr>
-                <tr>
-                    <th>작성일</th>
-                    <td th:text="${residence.residDate}">Date</td>
-                </tr>
-                <tr>
-                    <th>소개 내용</th>
-                    <td th:text="${residence.residDescription}">Description</td>
-                </tr>
-            </table>
+    <div class="container mt-5">
+        <h1>Residence Detail</h1>
+        <div>
+            <p>ID: <span th:text="${residence.residNo}"></span></p>
+            <p>Name: <span th:text="${residence.residName}"></span></p>
+            <p>Description: <span th:text="${residence.residDescription}"></span></p>
+            <p>Address: <span th:text="${residence.residAddress}"></span></p>
+            <p>Type: <span th:text="${residence.residType}"></span></p>
+            <p>Check-in Date: <span th:text="${residence.checkinDate}"></span></p>
+            <p>Check-out Date: <span th:text="${residence.checkoutDate}"></span></p>
+            <p>Total Price: <span th:text="${residence.totalPrice}"></span></p>
+            <p>Discount Rate: <span th:text="${residence.discountRate}"></span></p>
+            <p>Discounted Price: <span th:text="${residence.discountedPrice}"></span></p>
+            <p>Rating: <span th:text="${residence.rating}"></span></p>
+            <p>Thumbnail:</p>
+            <img th:if="${residence.thumbnailUrls != null}"
+                 th:src="@{/uploads/{photo}(photo=${residence.thumbnailUrls})}"
+                 alt="Thumbnail" width="100">
+            <p>Photos:</p>
+            <div>
+                <img th:each="photo : ${residence.photoUrls}"
+                     th:if="${photo != null}"
+                     th:src="@{/uploads/{photo}(photo=${photo})}"
+                     alt="Photo" width="100">
+            </div>
         </div>
     </div>
-    <a href="/residenceList" class="btn btn-primary">Back to List</a>
 </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,23 +1,39 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.springbootfinal.app.mapper.ResidenceMapper">
 
-    <!-- 게시글 리스트를 DB에서 가져오는 쿼리문 -->
-    <select id="selectResidenceList" resultType="ResidenceDto">
-        SELECT * FROM residence ORDER BY resid_no DESC
+        <!-- 모든 숙소 목록을 조회하는 SQL 쿼리 -->
+    <select id="selectResidenceList" resultType="com.springbootfinal.app.domain.ResidenceDto">
+        SELECT r.resid_no, r.resid_name, r.resid_description, r.resid_address, r.resid_type, r.checkin_date, r.checkout_date, r.total_price, r.discount_rate,
+               (r.total_price - (r.total_price * r.discount_rate / 100)) AS discounted_price, r.rating, r.resid_date, p.thumbnailUrls, p.photo_url01, p.photo_url02,
+               p.photo_url03, p.photo_url04, p.photo_url05, p.photo_url06, p.photo_url07, p.photo_url08, p.photo_url09, p.photo_url10
+        FROM residence r
+        LEFT JOIN property_photos p ON r.resid_no = p.resid_no
+        ORDER BY r.resid_no DESC
     </select>
-
-    <!-- no에 해당하는 게시글 하나를 가져오는 맵핑 구문 -->
-    <select id="selectResidenceByNo" resultType="ResidenceDto">
-        SELECT * FROM residence WHERE resid_no = #{resid_no}
+    <!-- 특정 번호의 숙소를 조회하는 SQL 쿼리 -->
+    <select id="selectResidenceByNo" resultType="com.springbootfinal.app.domain.ResidenceDto">
+        SELECT r.resid_no, r.resid_name, r.resid_description, r.resid_address, r.resid_type, r.checkin_date, r.checkout_date, r.total_price, r.discount_rate,
+               (r.total_price - (r.total_price * r.discount_rate / 100)) AS discounted_price, r.rating, r.resid_date, p.thumbnailUrls, p.photo_url01, p.photo_url02,
+               p.photo_url03, p.photo_url04, p.photo_url05, p.photo_url06, p.photo_url07, p.photo_url08, p.photo_url09, p.photo_url10
+        FROM residence r
+        LEFT JOIN property_photos p ON r.resid_no = p.resid_no
+        WHERE r.resid_no = #{residNo}
     </select>
-
-    <!-- 게시글을 테이블에 추가하는 맵핑 구문 -->
-    <insert id="insertResidence" parameterType="ResidenceDto">
+    <!-- 새로운 숙소를 추가하는 SQL 쿼리 -->
+    <insert id="insertResidence" parameterType="com.springbootfinal.app.domain.ResidenceDto" useGeneratedKeys="true" keyProperty="residNo">
         INSERT INTO residence (resid_name, resid_description, resid_address, resid_type, checkin_date, checkout_date, total_price, discount_rate, rating, resid_date)
-        VALUES (#{residName}, #{residDescription}, #{residAddress}, #{residType}, #{checkinDate}, #{checkoutDate}, #{totalPrice}, #{discountRate}, #{rating}, #{residDate})
+        VALUES (#{residName}, #{residDescription}, #{residAddress}, #{residType}, #{checkinDate}, #{checkoutDate}, #{totalPrice}, #{discountRate}, #{rating}, #{residDate});
     </insert>
+    <!-- 숙소의 사진을 추가하는 SQL 쿼리 -->
+    <insert id="insertPropertyPhotos" parameterType="com.springbootfinal.app.domain.ResidenceDto">
+        INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04, photo_url05, photo_url06, photo_url07, photo_url08, photo_url09, photo_url10)
+        VALUES (#{residNo}, #{thumbnailUrls}, #{photoUrl01}, #{photoUrl02}, #{photoUrl03}, #{photoUrl04}, #{photoUrl05}, #{photoUrl06}, #{photoUrl07}, #{photoUrl08}, #{photoUrl09}, #{photoUrl10});
+    </insert>
+
+
+
 
 </mapper>

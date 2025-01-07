@@ -5,7 +5,6 @@ import com.springbootfinal.app.service.ResidenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,39 +19,59 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
 public class ResidenceController {
-    @Autowired
-    private ResidenceService residenceService;
-    // 업로드한 사진을 저장할 폴더 위치를 상수로 선언
-    private static final String UPLOAD_DIR = "uploads/";
-
+    private final ResidenceService residenceService;
+    private static final String UPLOAD_DIR = "resources/static/uploads/";
 
     @GetMapping("/resid")
     public String getResidence(Model model) {
-        model.addAttribute("resList", residenceService.getResidenceList());
+        model.addAttribute("resList", residenceService.selectResidenceList());
         return "/residences/resid";
     }
 
-    // 게시글 리스트를 요청하는 메서드
     @GetMapping("/residenceList")
     public String getResidenceList(Model model) {
-        model.addAttribute("resList", residenceService.getResidenceList());
+        model.addAttribute("resList", residenceService.selectResidenceList());
         return "/residences/residenceList";
     }
 
-    // no에 해당하는 게시글 상세보기 요청을 처리하는 메서드
+    //게시글 상세보기 요청을 처리하는 메서드
     @GetMapping("/residenceDetail")
-    public String getResidenceDetail(@RequestParam("residNo") int residNo, Model model) {
-        model.addAttribute("residence", residenceService.getResidenceByNo(residNo));
-        return "/residences/residenceDetail";
+    public String getResidenceDetail(@RequestParam(name = "residNo") Long residNo, Model model) {
+        // ResidenceDto 가져오기
+        ResidenceDto residence = residenceService.findById(residNo);
+
+        // photoUrls 리스트 생성 및 residence에 설정
+        List<String> photoUrls = Arrays.asList(
+                        residence.getPhotoUrl01(),
+                        residence.getPhotoUrl02(),
+                        residence.getPhotoUrl03(),
+                        residence.getPhotoUrl04(),
+                        residence.getPhotoUrl05(),
+                        residence.getPhotoUrl06(),
+                        residence.getPhotoUrl07(),
+                        residence.getPhotoUrl08(),
+                        residence.getPhotoUrl09(),
+                        residence.getPhotoUrl10()
+                ).stream()
+                .filter(Objects::nonNull) // null 값 필터링
+                .collect(Collectors.toList());
+
+        residence.setPhotoUrls(photoUrls); // ResidenceDto에 설정
+
+        // 모델에 ResidenceDto 추가
+        model.addAttribute("residence", residence);
+
+        return "residences/residenceDetail";
     }
+
+
 
     @GetMapping("/residenceAdd")
     public String showAddForm(Model model) {
@@ -60,109 +79,57 @@ public class ResidenceController {
         return "/residences/residenceAdd";
     }
 
-
-    /*@PostMapping("/residenceAdd")
-    // 여러개의 사진 파일을 업로드할 수 있도록 MultipartFile[]로 수정
-    public String addResidence(@ModelAttribute ResidenceDto residenceDto, @RequestParam("photo") MultipartFile[] photos) {
-        // 업로드한 사진 파일을 저장할 폴더가 없으면 생성
-        File dir = new File(UPLOAD_DIR);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        // 업로드한 사진 파일을 하나씩 처리
-        for (MultipartFile photo : photos) {
-            // 업로드한 사진 파일이 없으면 다음 사진 파일로 넘어감
-            if (photo.isEmpty()) {
-                continue;
-            }
-
-            // 업로드한 사진 파일의 이름을 UUID로 변경
-            String uuid = UUID.randomUUID().toString();
-            String originalFileName = photo.getOriginalFilename();
-            String saveFileName = uuid + "_" + originalFileName;
-
-            // 업로드한 사진 파일을 저장할 경로를 생성
-            Path savePath = Paths.get(UPLOAD_DIR + saveFileName);
-
-            // 업로드한 사진 파일을 저장
-            try {
-                Files.copy(photo.getInputStream(), savePath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            // 업로드한 사진 파일의 이름을 DTO에 저장
-            residenceDto.setPhotoUrl(saveFileName);
-        }
-
-        // 게시글을 추가
-        residenceService.addResidence(residenceDto);
-        return "redirect:/residenceList";
-    }*/
-
-    //업로드한 사진이 데이터베이스 property_photos에 저장
-/*    @PostMapping("/residenceAdd")
-    public String addResidence(@ModelAttribute ResidenceDto residenceDto, @RequestParam("photo") MultipartFile photo) {
-        // Create the upload directory if it doesn't exist
-        File dir = new File(UPLOAD_DIR);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }*/
-
     @PostMapping("/residenceAdd")
     public String addResidence(@ModelAttribute ResidenceDto residenceDto, @RequestParam("photos") MultipartFile[] photos) {
-        // Create the upload directory if it doesn't exist
         File dir = new File(UPLOAD_DIR);
         if (!dir.exists()) {
             dir.mkdirs();
         }
 
         List<String> photoUrls = new ArrayList<>();
-        List<String> thumbnailUrls = new ArrayList<>();
+        String thumbnailUrl = null;
 
-        for (MultipartFile photo : photos) {
+        for (int i = 0; i < photos.length; i++) {
+            MultipartFile photo = photos[i];
             if (!photo.isEmpty()) {
-                // Generate a unique filename
                 String uuid = UUID.randomUUID().toString();
                 String originalFileName = photo.getOriginalFilename();
                 String saveFileName = uuid + "_" + originalFileName;
 
-                // Define the save path for the original photo
-                Path savePath = Paths.get(UPLOAD_DIR + saveFileName);
+                Path savePath = Paths.get(UPLOAD_DIR, saveFileName);
 
                 try {
-                    // Save the original photo
                     Files.copy(photo.getInputStream(), savePath, StandardCopyOption.REPLACE_EXISTING);
 
-                    // Create a thumbnail
-                    String thumbnailFileName = uuid + "_thumbnail_" + originalFileName;
-                    Path thumbnailPath = Paths.get(UPLOAD_DIR + thumbnailFileName);
-                    Thumbnails.of(savePath.toFile())
-                            .size(150, 150) // Set the desired thumbnail size
-                            .toFile(thumbnailPath.toFile());
+                    if (i == 0) {
+                        String thumbnailFileName = uuid + "_thumbnail_" + originalFileName;
+                        Path thumbnailPath = Paths.get(UPLOAD_DIR, thumbnailFileName);
+                        Thumbnails.of(savePath.toFile())
+                                .size(400, 400)
+                                .toFile(thumbnailPath.toFile());
+                        thumbnailUrl = thumbnailFileName;
+                    }
 
-                    // Add the filenames to the lists
                     photoUrls.add(saveFileName);
-                    thumbnailUrls.add(thumbnailFileName);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        // Save the photo and thumbnail URLs to the DTO
-        residenceDto.setPhotoUrls(photoUrls);
-        residenceDto.setThumbnailUrls(thumbnailUrls);
+        residenceDto.setThumbnailUrls(thumbnailUrl);
+        if (photoUrls.size() > 0) residenceDto.setPhotoUrl01(photoUrls.get(0));
+        if (photoUrls.size() > 1) residenceDto.setPhotoUrl02(photoUrls.get(1));
+        if (photoUrls.size() > 2) residenceDto.setPhotoUrl03(photoUrls.get(2));
+        if (photoUrls.size() > 3) residenceDto.setPhotoUrl04(photoUrls.get(3));
+        if (photoUrls.size() > 4) residenceDto.setPhotoUrl05(photoUrls.get(4));
+        if (photoUrls.size() > 5) residenceDto.setPhotoUrl06(photoUrls.get(5));
+        if (photoUrls.size() > 6) residenceDto.setPhotoUrl07(photoUrls.get(6));
+        if (photoUrls.size() > 7) residenceDto.setPhotoUrl08(photoUrls.get(7));
+        if (photoUrls.size() > 8) residenceDto.setPhotoUrl09(photoUrls.get(8));
+        if (photoUrls.size() > 9) residenceDto.setPhotoUrl10(photoUrls.get(9));
 
-        // Add the residence
         residenceService.addResidence(residenceDto);
         return "redirect:/residenceList";
     }
-
-
-
-
-
-
 }

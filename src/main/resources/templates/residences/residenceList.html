@@ -9,10 +9,10 @@
 <body>
 <div layout:fragment="content">
     <h1 class="my-4">Residence List</h1>
+    <a href="/residenceAdd" class="btn btn-success mb-3">숙소 추가</a>
     <table class="table table-striped">
         <thead>
-        <a href="/residenceAdd" class="btn btn-success">숙소 추가</a>
-       <!-- <tr>
+        <tr>
             <th>Photo</th>
             <th>Name</th>
             <th>Description</th>
@@ -25,15 +25,13 @@
             <th>Discounted Price</th>
             <th>Rating</th>
             <th>Date</th>
-        </tr>-->
+        </tr>
         </thead>
         <tbody>
         <tr th:each="residence : ${resList}">
-            <td><img th:src="@{${residence.photo}}" alt="Photo" /></td>
+            <td><img th:src="${residence.photoUrl01}" alt="Photo" /></td>
             <td><a th:href="@{/residenceDetail(residNo=${residence.residNo})}"
-                   th:text="${residence.residName}"
-                   th:src="${residence.photo}"></a></td>
-            <td th:text="${residence.residName}"></td>
+                   th:text="${residence.residName}"></a></td>
             <td th:text="${residence.residDescription}"></td>
             <td th:text="${residence.residAddress}"></td>
             <td th:text="${residence.residType}"></td>
